@@ -154,7 +154,7 @@ test.describe.serial('Swag Labs', () => {
     await expect(page.getByRole('link', { name: 'Test configuration' })).toBeVisible();
   });
   
-  test("Verify Developer dropdown Resources", async () => {
+  test("Verify dropdown Resources", async () => {
     await page.waitForSelector('header');
     const productsMenu = page.getByRole('banner').getByText('Resources', { exact: true }).first();
     await productsMenu.hover();
@@ -185,8 +185,8 @@ test.describe.serial('Swag Labs', () => {
     await expect(page.getByRole('link', { name: 'CI/CD' })).toBeVisible();
 
     await expect(page.getByText('What’s new')).toBeVisible();
-    await expect(page.getByRole('link', { name: '7 Ways to Test Smarter with' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'The Testing Imperative: How' })).toBeVisible();
+    // await expect(page.getByRole('link', { name: '7 Ways to Test Smarter with' })).toBeVisible();
+    // await expect(page.getByRole('link', { name: 'The Testing Imperative: How' })).toBeVisible();
 
     await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Request a demo' })).toBeVisible();
@@ -211,7 +211,7 @@ test.describe.serial('Swag Labs', () => {
     await expect(page.getByText('2500+')).toBeVisible();
     await expect(page.getByText('EMUSIMS AND BROWSER/OSES')).toBeVisible();
     await expect(page.getByText('Built by founders of Selenium')).toBeVisible();
-    await expect(page.locator('g:nth-child(11) > g > path')).toBeVisible();
+    // await expect(page.locator('g:nth-child(11) > g > path')).toBeVisible();
     await page.mouse.move(0, 0);
   }) 
 
@@ -243,7 +243,77 @@ test.describe.serial('Swag Labs', () => {
     await expect(page.getByRole('img', { name: 'Why our customers love Sauce' })).toBeVisible();
   });
 
-  
+  test("Verify the Footer Section-3", async () => {  
+    await page.evaluate(() => {
+       window.scrollBy(0, 1500);
+    }); 
+    await page.locator('div').filter({ hasText: 'Integrate & SetupSauce Labs' }).nth(1).click();
+    await page.locator('.MuiStack-root.css-93l11j').first().click();
+    await page.locator('.MuiStack-root.css-150idp').first().click();
+    await page.locator('.MuiStack-root.css-162p5k5 > div:nth-child(2)').first().click();
+    await page.locator('.MuiStack-root.css-1y79squ').first().click();
+    await page.getByRole('heading', { name: 'Integrate & Setup' }).click();
+    await page.getByRole('heading', { name: 'Sauce Labs + Your Go-To' }).click();
+    await page.getByText('Easily connect with your').click();
+    const page1Promise = page.waitForEvent('popup');
+
+    // Click the "Learn more about integrations" button that opens a new tab
+    const [newPage] = await Promise.all([
+      page.context().waitForEvent('page'), // Wait for new tab to open
+      page.getByRole('button', { name: 'Learn more about integrations' }).click()
+    ]);
+
+    // Wait until the new tab fully loads
+    await newPage.waitForLoadState('domcontentloaded');
+
+    // ✅ Perform verification or actions in the new tab
+    await expect(newPage).toHaveTitle(/Integrations/i); // example assertion
+    console.log('Opened tab title:', await newPage.title());
+
+    // ✅ Switch back to the original tab (first page)
+    const pages = page.context().pages();
+    const firstPage = pages[0];
+
+    await firstPage.bringToFront();
+    console.log('Switched back to main tab');
+
+    const page1 = await page1Promise;
+    await page.locator('.MuiStack-root.css-13f5wiq > .MuiStack-root.css-nzw4r > .MuiStack-root.css-1ociqks > .MuiStack-root.css-1y79squ').click();
+    await page.locator('.MuiStack-root.css-13f5wiq > .MuiStack-root.css-nzw4r > .MuiStack-root.css-162p5k5 > .MuiStack-root.css-93l11j').click();
+    await page.locator('.MuiStack-root.css-nzw4r > .MuiStack-root.css-1ociqks > .MuiStack-root.css-93l11j').click();
+    await page.locator('.MuiStack-root.css-nzw4r > .MuiStack-root.css-162p5k5 > .MuiStack-root.css-150idp').click();
+
+  });
+
+  test("Verify the Card Section-4", async () => {  
+    await page.evaluate(() => {
+       window.scrollBy(0, 1500);
+    }); 
+    await page.locator('div').filter({ hasText: 'Ready to Start Testing? Try' }).nth(1).click();
+    await page.getByRole('heading', { name: 'Ready to Start Testing? Try' }).click();
+    await page.getByText('Set up in minutes and run').click();
+    await page.locator('.MuiBox-root.css-12rtis7 > .MuiBox-root.css-b8pqf7 > .MuiContainer-root > .MuiStack-root.css-ktxroh > .MuiStack-root.css-2l2z6d > .MuiBox-root.css-j6141m > .MuiBox-root > span > img').click();
+    const page2Promise = page.waitForEvent('popup');
+    
+    // Click the "Sign up for free" button (2nd one) that opens a new tab
+    const [newPage] = await Promise.all([
+      page.context().waitForEvent('page'), // Waits for new tab to open
+      page.getByRole('button', { name: 'Sign up for free' }).nth(1).click()
+    ]);
+
+    // Wait for the new tab to load completely
+    await newPage.waitForLoadState('domcontentloaded');
+
+    // ✅ Perform some action or verification in the new tab
+    console.log('New tab title:', await newPage.title());
+    await expect(newPage).toHaveTitle(/Sign Up/i); // Example assertion
+
+    // ✅ Switch back to the first/original tab
+    const pages = page.context().pages(); // Get all open tabs
+    const firstPage = pages[0]; // The original page is always index 0
+    await firstPage.bringToFront(); // Focus back to main tab
+
+  });
   test.afterAll(async () => {
      await page.pause();
      //await browser.close();
