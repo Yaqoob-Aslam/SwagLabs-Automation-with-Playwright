@@ -314,6 +314,38 @@ test.describe.serial('Swag Labs', () => {
     await firstPage.bringToFront(); // Focus back to main tab
 
   });
+
+    test("Verify the Card Section-5", async () => {  
+      await page.evaluate(() => {
+        window.scrollBy(0, 1500);
+      }); 
+  // ✅ Click first blog and go back
+    await Promise.all([
+      page.waitForLoadState('load'),
+      page.getByRole('link', { name: 'Blog Solving the Disconnect' }).click()
+    ]);
+    await page.goBack();
+
+    // ✅ Click second blog and go back
+    await Promise.all([
+      page.waitForLoadState('load'),
+      page.getByRole('link', { name: 'Blog An AI-Powered Reality' }).click()
+    ]);
+    await page.goBack();
+
+    await Promise.all([
+      page.waitForLoadState('load'),
+      page.getByRole('link', { name: 'Blog 4 Key Trends Shaping' }).click()
+    ]);
+    await page.goBack();
+
+    // ✅ Click "More updates"
+    await Promise.all([
+      page.waitForLoadState('load'),
+      page.getByRole('link', { name: 'More updates' }).click()
+    ]);
+  });
+
   test.afterAll(async () => {
      await page.pause();
      //await browser.close();
